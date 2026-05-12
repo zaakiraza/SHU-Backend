@@ -1,0 +1,618 @@
+{
+  "info": {
+    "_postman_id": "6ce8086e-a4ae-4fd8-9ef1-df8b26f2fc70",
+    "name": "UniReview API - All Endpoints",
+    "description": "Complete API collection listing all current endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/"
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register (Student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Student\",\n  \"email\": \"student@example.com\",\n  \"password\": \"Password@123\",\n  \"role\": \"student\",\n  \"universityId\": \"{{universityId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register",
+            "description": "Register as a student. universityId is optional — must be a valid MongoDB ObjectId of an approved university if provided. role must be 'student' or 'uniAdmin'."
+          }
+        },
+        {
+          "name": "Register (uniAdmin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"University Admin\",\n  \"email\": \"uniadmin@example.com\",\n  \"password\": \"Password@123\",\n  \"role\": \"uniAdmin\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register",
+            "description": "Register as a uniAdmin. Do NOT send universityId — the uniAdmin will create their university separately after registration + OTP verification."
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/verify-otp"
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/resend-otp"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Universities",
+      "item": [
+        {
+          "name": "List Universities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/universities?page=1&limit=10"
+          }
+        },
+        {
+          "name": "Get Pending Universities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/universities/pending"
+          }
+        },
+        {
+          "name": "Get University By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/universities/{{universityId}}"
+          }
+        },
+        {
+          "name": "Create University",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"University Name\",\n  \"description\": \"Description\",\n  \"location\": \"City\",\n  \"website\": \"https://example.edu\",\n  \"emailDomain\": \"example.edu\",\n  \"logo\": \"\"\n}"
+            },
+            "url": "{{baseUrl}}/api/universities"
+          }
+        },
+        {
+          "name": "Approve University",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/universities/{{universityId}}/approve"
+          }
+        },
+        {
+          "name": "Reject University",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Insufficient verification details\"\n}"
+            },
+            "url": "{{baseUrl}}/api/universities/{{universityId}}/reject"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/categories"
+          }
+        },
+        {
+          "name": "Get Pending Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/categories/pending"
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Faculty\"\n}"
+            },
+            "url": "{{baseUrl}}/api/categories"
+          }
+        },
+        {
+          "name": "Approve Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/categories/{{categoryId}}/approve"
+          }
+        },
+        {
+          "name": "Reject Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/categories/{{categoryId}}/reject"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "List Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/comments?university={{universityId}}&category={{categoryId}}&page=1&limit=10"
+          }
+        },
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Great faculty support\",\n  \"university\": \"{{universityId}}\",\n  \"category\": \"{{categoryId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/comments"
+          }
+        },
+        {
+          "name": "Reply to Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Thanks for your feedback\"\n}"
+            },
+            "url": "{{baseUrl}}/api/comments/{{commentId}}/reply"
+          }
+        },
+        {
+          "name": "Toggle Like on Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/comments/{{commentId}}/like"
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/comments/{{commentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Societies",
+      "item": [
+        {
+          "name": "List Societies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/societies?university={{universityId}}&page=1&limit=10"
+          }
+        },
+        {
+          "name": "Get Pending Societies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/societies/pending"
+          }
+        },
+        {
+          "name": "Get Society By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/societies/{{societyId}}"
+          }
+        },
+        {
+          "name": "Create Society",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AI Society\",\n  \"description\": \"Tech community\",\n  \"university\": \"{{universityId}}\",\n  \"logo\": \"\",\n  \"societyAdminId\": \"{{societyAdminUserId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/societies"
+          }
+        },
+        {
+          "name": "Approve Society",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/societies/{{societyId}}/approve"
+          }
+        },
+        {
+          "name": "Reject Society",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Verification not complete\"\n}"
+            },
+            "url": "{{baseUrl}}/api/societies/{{societyId}}/reject"
+          }
+        },
+        {
+          "name": "Assign Society Admin",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{societyAdminUserId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/societies/{{societyId}}/assign-admin"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Announcements",
+      "item": [
+        {
+          "name": "List Announcements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/announcements?society={{societyId}}&page=1&limit=10"
+          }
+        },
+        {
+          "name": "Create Announcement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Society Induction\",\n  \"content\": \"Join our induction event\",\n  \"type\": \"event\",\n  \"society\": \"{{societyId}}\",\n  \"visibility\": \"all\",\n  \"targetSociety\": null\n}"
+            },
+            "url": "{{baseUrl}}/api/announcements"
+          }
+        },
+        {
+          "name": "Delete Announcement",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/announcements/{{announcementId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Pending Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/pending"
+          }
+        },
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/users?page=1&limit=10"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@unireview.com"
+    },
+    {
+      "key": "adminPassword",
+      "value": "Admin@123"
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "universityId",
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
+    },
+    {
+      "key": "commentId",
+      "value": ""
+    },
+    {
+      "key": "societyId",
+      "value": ""
+    },
+    {
+      "key": "societyAdminUserId",
+      "value": ""
+    },
+    {
+      "key": "announcementId",
+      "value": ""
+    }
+  ]
+}
