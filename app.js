@@ -71,9 +71,11 @@ app.get("/", (req, res) => {
   res.send("Hello, World! Your server is running 🎉");
 });
 
-const PORT = process.env.PORT;
-if (process.env.NODE_ENV == "development") {
+const PORT = process.env.PORT || 8080;
+if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
 }
+
+export default app;
