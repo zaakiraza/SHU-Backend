@@ -3,39 +3,46 @@ import Society from "../models/society.js";
 import { errorResponse, successResponse } from "../utils/responseHandler.js";
 
 export const announcementController = {
-  // Public/Auth: get announcements for a society (visibility-filtered)
+  // Public/Auth: get announcements — society is optional; supports ?type= filter
   getAnnouncements: async (req, res) => {
     try {
-      const { society: societyId } = req.query;
-      if (!societyId) return errorResponse(res, "society query param is required.", 400);
-
-      const society = await Society.findOne({ _id: societyId, status: "approved", isActive: true });
-      if (!society) return errorResponse(res, "Society not found.", 404);
-
-      // Check if requester is from the same university
-      const sameUni =
-        req.user &&
-        req.user.university &&
-        req.user.university.toString() === society.university.toString();
-
-      // Guests and users from other universities see only public announcements
-      const visibilityFilter = sameUni
-        ? { visibility: { $in: ["all", "own_uni", "specific_society"] } }
-        : { visibility: "all" };
-
+      const { society: societyId, type } = req.query;
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const skip = (page - 1) * limit;
 
+      let filter = { isActive: true };
+
+      if (societyId) {
+        const society = await Society.findOne({ _id: societyId, status: "approved", isActive: true });
+        if (!society) return errorResponse(res, "Society not found.", 404);
+
+        filter.society = societyId;
+
+        const sameUni =
+          req.user &&
+          req.user.university &&
+          req.user.university.toString() === society.university.toString();
+
+        filter.visibility = sameUni
+          ? { $in: ["all", "own_uni", "specific_society"] }
+          : "all";
+      } else {
+        // No society filter — only show globally public announcements
+        filter.visibility = "all";
+      }
+
+      if (type) filter.type = type;
+
       const [announcements, total] = await Promise.all([
-        Announcement.find({ society: societyId, isActive: true, ...visibilityFilter })
+        Announcement.find(filter)
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)
           .populate("createdBy", "name")
           .populate("society", "name")
           .populate("targetSociety", "name"),
-        Announcement.countDocuments({ society: societyId, isActive: true, ...visibilityFilter }),
+        Announcement.countDocuments(filter),
       ]);
 
       return successResponse(

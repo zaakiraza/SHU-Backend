@@ -117,7 +117,9 @@ export const societyController = {
 
       const filter = { status: "pending", isActive: true };
       if (req.user.role === "uniAdmin") {
-        if (!req.user.university) return errorResponse(res, "University not assigned for uniAdmin.", 400);
+        if (!req.user.university) {
+          return successResponse(res, [], "No university assigned yet");
+        }
         filter.university = req.user.university;
       }
 

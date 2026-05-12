@@ -6,9 +6,9 @@ export const commentController = {
   getComments: async (req, res) => {
     try {
       const { university, category } = req.query;
-      if (!university) return errorResponse(res, "university query param is required.", 400);
 
-      const filter = { university, isActive: true };
+      const filter = { isActive: true };
+      if (university) filter.university = university;
       if (category) filter.category = category;
 
       const page = parseInt(req.query.page) || 1;
